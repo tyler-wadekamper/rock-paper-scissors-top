@@ -2,20 +2,17 @@ function playOneMatch() {
     let matchIsNotOver = true;
     let userComputerMatchScore = [0, 0];
 
-    //display welcome message
     printWelcomeMessage();
 
     while(matchIsNotOver){
         let isUserVictory = null;
-        //get the result of a game
+
         isUserVictory = playOneGame();
         
-        //change the score of the match
         userComputerMatchScore = changeMatchScore(isUserVictory, userComputerMatchScore);
         
         matchIsNotOver = isMatchNotOver(userComputerMatchScore);
 
-        //decide if match is over
         if (matchIsNotOver) {
             continue;
         }
@@ -31,11 +28,10 @@ function playOneGame(){
     let userInput = null;
 
     while (keepGoing) {
-        //get user input
+
         userInput = getUserInputWithMessage();
         userInputLowered = userInput.toLowerCase();
 
-        //validate user input, decide if need to get input again
         if (isValidUserInput(userInputLowered)) {
             keepGoing = false;
         }
@@ -44,10 +40,8 @@ function playOneGame(){
         }
     }
 
-    //generate cpu answer using a random number generator
     computerInput = generateComputerInput();
 
-    //resolve game based on user, cpu answers
     isUserVictory = getUserVictory(userInputLowered, computerInput);
     
     printGameResult(isUserVictory, userInputLowered, computerInput);
