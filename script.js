@@ -1,3 +1,5 @@
+//This file implements the logic and user interface interaction.
+
 function playOneMatch() {
     let matchIsNotOver = true;
     let userComputerMatchScore = [0, 0];
