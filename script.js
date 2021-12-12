@@ -1,74 +1,28 @@
 //This file implements the logic and user interface interaction.
 
-function playOneMatch() {
-    let matchIsNotOver = true;
-    let userComputerMatchScore = [0, 0];
-
-    printWelcomeMessage();
-
-    while(matchIsNotOver){
-        let isUserVictory = null;
-
-        isUserVictory = playOneGame();
-        
-        userComputerMatchScore = changeMatchScore(isUserVictory, userComputerMatchScore);
-        
-        matchIsNotOver = isMatchNotOver(userComputerMatchScore);
-
-        if (matchIsNotOver) {
-            continue;
-        }
-        else {
-            printMatchEndMessage(userComputerMatchScore);
-        }
-    }
-}
-
-function playOneGame(){
-    let keepGoing = true;
+function playOneGame(mouseClickEvent) {
     let isUserVictory = null;
-    let userInput = null;
-
-    while (keepGoing) {
-
-        userInput = getUserInputWithMessage();
-        userInputLowered = userInput.toLowerCase();
-
-        if (isValidUserInput(userInputLowered)) {
-            keepGoing = false;
-        }
-        else {
-            printRetryUserInputMessage(userInputLowered);
-        }
-    }
+    let userInput = mouseClickEvent.target.dataset.optionType;
+    let matchIsNotOver = true;
 
     computerInput = generateComputerInput();
 
-    isUserVictory = getUserVictory(userInputLowered, computerInput);
+    isUserVictory = getUserVictory(userInput, computerInput);
     
-    printGameResult(isUserVictory, userInputLowered, computerInput);
-    
-    return isUserVictory;
-}
+    printGameResult(isUserVictory, userInput, computerInput);
 
+    changeMatchScore(isUserVictory);
 
-function printWelcomeMessage() {
-    console.log("Welcome to rock paper scissors. Your options are 'rock', 'paper', or 'scissors'. Type your answer below.");
-}
+    matchIsNotOver = isMatchNotOver();
 
-function getUserInputWithMessage() {
-    return prompt("Choose your weapon. Your options are 'rock', 'paper', or 'scissors'.");
-}
-
-function isValidUserInput(userInput) {
-    if (userInputLowered == "rock") {}
-    else if (userInputLowered == "paper") {}
-    else if (userInputLowered == "scissors") {}
-    else {
-        return false;
+    if (matchIsNotOver) {
+        incrementRound();
     }
-
-    return true;
+    else {
+        removeButtonEventListeners();
+        printMatchEndMessage();
+        replayButton = initReplayButton();
+    }
 }
 
 function printRetryUserInputMessage(userInput) {
@@ -117,39 +71,47 @@ function getUserVictory(userInput, computerInput) {
 }
 
 function printGameResult(isUserVictory, userInput, computerInput) {
-    console.log(`You played ${userInput} and the computer played ${computerInput}.`)
+    let resultMessageDiv = document.querySelector('.result-message');
+
+    resultMessageDiv.innerText = `You played ${userInput} and the computer played ${computerInput}.`;
     
     if (isUserVictory == true) {
-        console.log("Nice work! You won the game.")
+        resultMessageDiv.innerText += " Nice work! You won.";
     }
     else if (isUserVictory == false) {
-        console.log("Tough opponent. You lost this one.")
+        resultMessageDiv.innerText += " Tough opponent. You lost this one.";
     }
     else if (isUserVictory == null) {
-        console.log("Great minds think alike. That's a draw.")
+        resultMessageDiv.innerText += " Great minds think alike. That's a draw.";
     }
 }
 
-function changeMatchScore(isUserVictory, userComputerMatchScore) {
-    let newMatchScore = userComputerMatchScore;
+function changeMatchScore(isUserVictory) {
+    let userScoreDiv = getUserScoreDiv();
+    let cpuScoreDiv = getCpuScoreDiv();
+
+    let userScoreNum = getUserScoreNum();
+    let cpuScoreNum = getCpuScoreNum();
 
     if (isUserVictory == true) {
-        newMatchScore[0] += 1;
+        userScoreNum += 1;
+        userScoreDiv.innerText = userScoreNum;
     }
     else if (isUserVictory == false) {
-        newMatchScore[1] += 1;
+        cpuScoreNum += 1;
+        cpuScoreDiv.innerText = cpuScoreNum;
     }
-    else if (isUserVictory == null) {}
-
-    return newMatchScore;
+    else if (isUserVictory == null) {
+        incrementDrawScore();
+    }
 }
 
-function isMatchNotOver(userComputerMatchScore) {
-    let userScore = userComputerMatchScore[0]
-    let computerScore = userComputerMatchScore[1]
+function isMatchNotOver() {
+    let userScoreNum = getUserScoreNum();
+    let cpuScoreNum = getCpuScoreNum();
 
-    if (userScore == 5) {}
-    else if (computerScore == 5) {}
+    if (userScoreNum == 5) {}
+    else if (cpuScoreNum == 5) {}
     else {
         return true;
     }
@@ -157,16 +119,142 @@ function isMatchNotOver(userComputerMatchScore) {
     return false;
 }
 
-function printMatchEndMessage(userComputerMatchScore) {
-    let userScore = userComputerMatchScore[0]
-    let computerScore = userComputerMatchScore[1]
+function printMatchEndMessage() {
+    let userScoreNum = getUserScoreNum();
+    let cpuScoreNum = getCpuScoreNum();
+    let resultMessageDiv = document.querySelector('.result-message');
 
-    if (userScore == 5) {
-        console.log(`Great job! You beat the computer by a score of ${userScore} to ${computerScore}.`)
+    if (userScoreNum == 5) {
+        resultMessageDiv.innerText = `Way to go, you beat the computer!`;
     }
-    else if (computerScore == 5) {
-        console.log(`Bummer. The computer got the best of you by a score of ${computerScore} to ${userScore}.`)
+    else if (cpuScoreNum == 5) {
+        resultMessageDiv.innerText = `Darn, the computer got the best of you this time.`;
     }
 }
 
-playOneMatch();
+function addButtonEventListeners() {
+    let optionButtons = document.querySelectorAll(".option-button");
+
+    optionButtons.forEach(addButtonClickEventListener);
+}
+
+function addButtonClickEventListener(button) {
+    button.addEventListener('click', playOneGame);
+}
+
+function getUserScoreDiv() {
+    let userScoreDiv = document.querySelector('.user-score');
+    return userScoreDiv;   
+}
+
+function getCpuScoreDiv() {
+    let cpuScoreDiv = document.querySelector('.cpu-score');
+    return cpuScoreDiv;
+}
+
+function getUserScoreNum() {
+    let userScoreDiv = document.querySelector('.user-score');
+    let userScoreNum = Number(userScoreDiv.innerText);
+    return userScoreNum;   
+}
+
+function getCpuScoreNum() {
+    let cpuScoreDiv = document.querySelector('.cpu-score');
+    let cpuScoreNum = Number(cpuScoreDiv.innerText);
+    return cpuScoreNum;
+}
+
+function initReplayButton() {
+    replayButton = addReplayButtonToDom();
+    addReplayButtonClickListener(replayButton);
+
+    return replayButton;
+}
+
+function addReplayButtonToDom () {
+    let replayButton = document.createElement('button');
+    replayButton.classList.add('replay-button');
+    replayButton.innerText = 'Play Again';
+
+    let buttonContainerDiv = document.querySelector('.replay-button-container');
+    buttonContainerDiv.append(replayButton);
+
+    return replayButton;
+}
+
+function removeReplayButton() {
+    let replayButton = document.querySelector('.replay-button');
+    replayButton.remove();
+}
+
+function removeButtonEventListeners() {
+    let optionButtons = document.querySelectorAll(".option-button");
+
+    optionButtons.forEach(removeButtonEventListener);
+}
+
+function removeButtonEventListener(button) {
+    button.removeEventListener('click', playOneGame);
+}
+
+function addReplayButtonClickListener(replayButton) {
+    replayButton.addEventListener('click', resetGame)
+}
+
+function resetGame(event) {
+    resetScoreBoard();
+    clearResultMessage();
+    removeReplayButton();
+    addButtonEventListeners();
+}
+
+function resetScoreBoard() {
+    setUserScore(0);
+    setCpuScore(0);
+    setDrawScore(0);
+    setRound(1);
+}
+
+function clearResultMessage() {
+    let resultMessageDiv = document.querySelector('.result-message');
+    resultMessageDiv.innerText = "";
+}
+
+function setUserScore(scoreNumber) {
+    let userScoreDiv = getUserScoreDiv();
+    userScoreDiv.innerText = scoreNumber;
+}
+
+function setCpuScore(scoreNumber) {
+    let cpuScoreDiv = getCpuScoreDiv();
+    cpuScoreDiv.innerText = scoreNumber;
+}
+
+function setRound(roundNumber) {
+    let roundDiv = document.querySelector('.round');
+    let roundText = `Round ${roundNumber}`;
+    roundDiv.dataset.round = roundNumber;
+    roundDiv.innerText = roundText;
+}
+
+function incrementRound() {
+    let roundDiv = document.querySelector('.round');
+    let roundNumber = Number(roundDiv.dataset.round);
+    roundNumber += 1;
+    roundDiv.dataset.round = roundNumber;
+    setRound(roundNumber);
+}
+
+function incrementDrawScore () {
+    let drawDiv = document.querySelector('.draw-score');
+    let drawScore = Number(drawDiv.innerText);
+    drawScore += 1;
+    setDrawScore(drawScore);
+}
+
+function setDrawScore(drawNumber) {
+    let drawDiv = document.querySelector('.draw-score');
+    drawDiv.innerText = drawNumber;
+}
+
+addButtonEventListeners();

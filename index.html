@@ -5,8 +5,43 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <script src="script.js"></script> 
+    <script src="script.js" defer></script> 
+    <div class="board-container">
+        <h1>Welcome to Rock, Paper, Scissors!</h1>
+        <h2>Choose wisely...</h2>
+        <div class="button-container">
+            <span class="option-button">
+                <img src="images/rock.svg" alt="" data-option-type="rock">
+            </span>
+            <span class="option-button">
+                <img src="images/paper.svg" alt="" data-option-type="paper">
+            </span>
+            <span class="option-button" >
+                <img src="images/scissors.svg" alt="" data-option-type="scissors">
+            </span>
+        </div>
+        <div class="round" data-round="1">Round 1</div>
+        <div class="score-container scores">
+            <div class="scoreboard-item">
+                <div class="header under-scoreboard" data-user-name="User">User</div>
+                <div class="score-display score under-scoreboard user-score">0</div>
+            </div>
+            <div class="scoreboard-item">
+                <div class="header under-scoreboard">Draw</div>
+                <div class="score under-scoreboard draw-score" data-draw-score="0">0</div>
+            </div>
+            <div class="scoreboard-item">
+                <div class="header under-scoreboard">CPU</div>
+                <div class="score-display score under-scoreboard cpu-score">0</div>
+            </div>
+        </div>
+        <div class="result-container">
+            <div class="result-message"></div>
+            <div class="replay-button-container"></div>
+        </div>
+    </div>
 </body>
 </html>
