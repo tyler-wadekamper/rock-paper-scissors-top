@@ -34,7 +34,6 @@ h1, h2 {
 }
 
 .button-container, .score-container {
-    margin-top: 30px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -77,6 +76,7 @@ body {
 }
 
 .round {
+    margin-top: 20px;
     font-size: 36px;
     font-weight: bold;
     text-align: center;
@@ -102,6 +102,7 @@ body {
 
 .score {
     border: solid #EDF5E1 3px;
+    border-radius: 3px;
     padding: 20px 30px;
     font-size: 36px;
 }

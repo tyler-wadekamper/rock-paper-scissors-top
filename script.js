@@ -3,26 +3,40 @@
 function playOneGame(mouseClickEvent) {
     let isUserVictory = null;
     let userInput = mouseClickEvent.target.dataset.optionType;
-    let matchIsNotOver = true;
 
     computerInput = generateComputerInput();
 
     isUserVictory = getUserVictory(userInput, computerInput);
-    
-    printGameResult(isUserVictory, userInput, computerInput);
 
     changeMatchScore(isUserVictory);
 
-    matchIsNotOver = isMatchNotOver();
+    printGameResult(isUserVictory, userInput, computerInput);
 
-    if (matchIsNotOver) {
+    winner = getWinner();
+
+    if (winner == null) {
         incrementRound();
     }
     else {
         removeButtonEventListeners();
-        printMatchEndMessage();
+        displayMatchEndMessage(winner);
         replayButton = initReplayButton();
     }
+}
+
+function getWinner() {
+    let userScoreNum = getUserScoreNum();
+    let cpuScoreNum = getCpuScoreNum();
+    let winner = null;
+
+    if (userScoreNum == 5) {
+        winner = "user";
+    }
+    else if (cpuScoreNum == 5) {
+        winner = "cpu";
+    }
+
+    return winner;
 }
 
 function printRetryUserInputMessage(userInput) {
@@ -72,17 +86,20 @@ function getUserVictory(userInput, computerInput) {
 
 function printGameResult(isUserVictory, userInput, computerInput) {
     let resultMessageDiv = document.querySelector('.result-message');
+    let winner = getWinner();
 
     resultMessageDiv.innerText = `You played ${userInput} and the computer played ${computerInput}.`;
     
-    if (isUserVictory == true) {
-        resultMessageDiv.innerText += " Nice work! You won.";
-    }
-    else if (isUserVictory == false) {
-        resultMessageDiv.innerText += " Tough opponent. You lost this one.";
-    }
-    else if (isUserVictory == null) {
-        resultMessageDiv.innerText += " Great minds think alike. That's a draw.";
+    if (winner == null){
+        if (isUserVictory == true) {
+            resultMessageDiv.innerText += " Nice work! You won.";
+        }
+        else if (isUserVictory == false) {
+            resultMessageDiv.innerText += " Tough opponent. You lost this one.";
+        }
+        else if (isUserVictory == null) {
+            resultMessageDiv.innerText += " Great minds think alike. That's a draw.";
+        }
     }
 }
 
@@ -106,29 +123,14 @@ function changeMatchScore(isUserVictory) {
     }
 }
 
-function isMatchNotOver() {
-    let userScoreNum = getUserScoreNum();
-    let cpuScoreNum = getCpuScoreNum();
-
-    if (userScoreNum == 5) {}
-    else if (cpuScoreNum == 5) {}
-    else {
-        return true;
-    }
-
-    return false;
-}
-
-function printMatchEndMessage() {
-    let userScoreNum = getUserScoreNum();
-    let cpuScoreNum = getCpuScoreNum();
+function displayMatchEndMessage(winner) {
     let resultMessageDiv = document.querySelector('.result-message');
 
-    if (userScoreNum == 5) {
-        resultMessageDiv.innerText = `Way to go, you beat the computer!`;
+    if (winner == "user") {
+        resultMessageDiv.innerText += ` Way to go, you beat the computer!`;
     }
-    else if (cpuScoreNum == 5) {
-        resultMessageDiv.innerText = `Darn, the computer got the best of you this time.`;
+    else if (winner == "cpu") {
+        resultMessageDiv.innerText += ` Darn, the computer got the best of you this time.`;
     }
 }
 
